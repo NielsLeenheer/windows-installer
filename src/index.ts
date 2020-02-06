@@ -26,7 +26,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
-  const wineExe = 'wine';
+  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
@@ -47,7 +47,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
-    let cmd = path.join(vendorPath, 'rcedit.exe');
+    let cmd = path.join(vendorPath, process.arch === 'x64' ? 'rcedit-x64.exe' : 'rcedit.exe');
     let args = [
       appUpdate,
       '--set-icon', options.setupIcon
